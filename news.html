@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>News — Workforce Economics Lab</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="wrap header">
+    <div class="brand">
+      <div class="logo">W</div>
+      <div>
+        <div class="title">Workforce Economics Lab</div>
+        <div class="subtitle">News that impacts workforce economics (filtered)</div>
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <div class="field"><label>Industry</label><select id="industry"></select></div>
+      <div class="field"><label>Region</label><select id="region"></select></div>
+      <div class="field"><label>Headcount</label><input id="headcount" type="number" min="1" /></div>
+      <div class="field"><label>Avg salary (£)</label><input id="salary" type="number" min="0" /></div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="./index.html">Overview</a>
+    <a href="./retention.html">Retention</a>
+    <a href="./attraction.html">Attraction & scaling</a>
+    <a href="./economics.html">Economics</a>
+    <a href="./news.html">News</a>
+  </nav>
+
+  <main class="wrap grid">
+    <section class="card">
+      <div class="score-row">
+        <div>
+          <div class="card-title">News feed</div>
+          <div class="tiny muted">Filtered for NI, pensions, pay, employment law, inflation, hiring and benefits.</div>
+        </div>
+        <div>
+          <div class="tiny muted">Engagement score</div>
+          <div class="score-big" id="engagementScore">—</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="btnrow">
+        <button id="refreshNews">Refresh</button>
+        <span class="tiny muted" id="newsStatus">—</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div id="newsList" class="news"></div>
+
+      <div class="footer"><strong>Note:</strong> Some sources block browser requests; those will be skipped automatically.</div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">Demo tip</div>
+      <div class="tiny muted">
+        Use this page at the end: “Here’s what’s changing in the market, and what it means for your workforce economics.”
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
