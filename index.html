@@ -1,0 +1,160 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Workforce Economics Lab</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="wrap header">
+    <div class="brand">
+      <div class="logo">W</div>
+      <div>
+        <div class="title">Workforce Economics Lab</div>
+        <div class="subtitle">A mini tool hub for workforce risk + improvement modelling (UK)</div>
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <div class="field">
+        <label>Industry</label>
+        <select id="industry"></select>
+      </div>
+      <div class="field">
+        <label>Region</label>
+        <select id="region"></select>
+      </div>
+      <div class="field">
+        <label>Headcount</label>
+        <input id="headcount" type="number" min="1" value="250" />
+      </div>
+      <div class="field">
+        <label>Avg salary (£)</label>
+        <input id="salary" type="number" min="0" value="32000" />
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="./index.html">Overview</a>
+    <a href="./retention.html">Retention</a>
+    <a href="./attraction.html">Attraction & scaling</a>
+    <a href="./economics.html">Economics</a>
+    <a href="./news.html">News</a>
+  </nav>
+
+  <main class="wrap grid">
+    <section class="card">
+      <div class="score-row">
+        <div>
+          <div class="card-title">Engagement Score</div>
+          <div class="tiny muted">Composite score (0–100) based on retention exposure, scaling drag, engagement/renewal risk, NI gap and pension gap.</div>
+        </div>
+        <div class="score-big" id="engagementScore">—</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">12-month attrition leakage</div>
+          <div class="kpi-value" id="kpiAttrCost">—</div>
+          <div class="kpi-note" id="kpiAttrNote">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Hiring & scaling drag</div>
+          <div class="kpi-value" id="kpiGrowthDrag">—</div>
+          <div class="kpi-note" id="kpiGrowthNote">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">NI optimisation gap</div>
+          <div class="kpi-value" id="kpiNiGap">—</div>
+          <div class="kpi-note" id="kpiNiNote">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Pension contribution gap (proxy)</div>
+          <div class="kpi-value" id="kpiPensionGap">—</div>
+          <div class="kpi-note" id="kpiPensionNote">—</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-title">Improvement scenario (12 months)</div>
+      <div class="tiny muted">Adjust these and the impact estimate updates. Uses the same assumptions across all pages.</div>
+
+      <div class="widgets">
+        <div class="widget">
+          <div class="row">
+            <div class="field">
+              <label>Retention improvement (pp)</label>
+              <input id="improveRetentionPP" type="range" min="0" max="3" step="0.1" value="1.0" />
+            </div>
+            <div class="field">
+              <label>Productivity recovery (%)</label>
+              <input id="improveProductivityPct" type="range" min="0" max="15" step="1" value="5" />
+            </div>
+            <div class="field">
+              <label>Sacrifice uptake + (pp)</label>
+              <input id="improveSacrificePP" type="range" min="0" max="20" step="1" value="5" />
+            </div>
+            <div class="field">
+              <label>Engagement + (pp)</label>
+              <input id="improveEngagementPP" type="range" min="0" max="25" step="1" value="8" />
+            </div>
+          </div>
+
+          <div class="tiny muted" style="margin-top:10px;">
+            Retention: <strong id="improveRetentionPPVal">—</strong> ·
+            Productivity: <strong id="improveProductivityPctVal">—</strong> ·
+            Sacrifice: <strong id="improveSacrificePPVal">—</strong> ·
+            Engagement: <strong id="improveEngagementPPVal">—</strong>
+          </div>
+        </div>
+
+        <div class="widget">
+          <div class="score-row">
+            <div>
+              <div class="card-title">Estimated impact</div>
+              <div class="tiny muted" id="totalImpactNote">—</div>
+            </div>
+            <div class="score-big" id="totalImpact">—</div>
+          </div>
+          <div class="btnrow" style="margin-top:10px;">
+            <button id="copySummary">Copy board summary</button>
+            <button id="printView">Print / Save PDF</button>
+            <span class="tiny muted" id="summaryStatus"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer"><strong>Built by Jack Dewhurst</strong> — Workforce Economics Lab · Benchmarking model for prioritisation (not a prediction).</div>
+    </section>
+
+    <section class="stack">
+      <section class="card">
+        <div class="card-title">How to use this in a GTM conversation</div>
+        <div class="tiny muted">
+          Pick their industry + headcount. Use the score to frame risk, then click into each module to show
+          what’s driving the score and where improvements typically come from.
+        </div>
+        <div class="divider"></div>
+        <div class="tiny muted">
+          Suggested flow: Overview → Retention → Attraction & scaling → Economics → News.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">What’s inside</div>
+        <div class="tiny muted">
+          Each module is a “widget” but shares a single state. Change inputs in one place and the entire lab updates.
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
