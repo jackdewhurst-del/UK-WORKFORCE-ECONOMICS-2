@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attraction & Scaling — Workforce Economics Lab</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="wrap header">
+    <div class="brand">
+      <div class="logo">W</div>
+      <div>
+        <div class="title">Workforce Economics Lab</div>
+        <div class="subtitle">Attraction & scaling drag (hiring friction)</div>
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <div class="field"><label>Industry</label><select id="industry"></select></div>
+      <div class="field"><label>Region</label><select id="region"></select></div>
+      <div class="field"><label>Headcount</label><input id="headcount" type="number" min="1" /></div>
+      <div class="field"><label>Avg salary (£)</label><input id="salary" type="number" min="0" /></div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="./index.html">Overview</a>
+    <a href="./retention.html">Retention</a>
+    <a href="./attraction.html">Attraction & scaling</a>
+    <a href="./economics.html">Economics</a>
+    <a href="./news.html">News</a>
+  </nav>
+
+  <main class="wrap grid">
+    <section class="card">
+      <div class="score-row">
+        <div>
+          <div class="card-title">Attraction & scaling module</div>
+          <div class="tiny muted">Shows how hiring friction + attrition affects your ability to hit growth targets.</div>
+        </div>
+        <div>
+          <div class="tiny muted">Engagement score</div>
+          <div class="score-big" id="engagementScore">—</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Hires needed (growth + backfill)</div>
+          <div class="kpi-value" id="att_hiresNeeded">—</div>
+          <div class="kpi-note">Backfill is derived from retention assumptions.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Growth shortfall (roles)</div>
+          <div class="kpi-value" id="att_shortfall">—</div>
+          <div class="kpi-note">Proxy based on acceptance + time-to-hire.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Recruiting cost proxy</div>
+          <div class="kpi-value" id="att_recruit">—</div>
+          <div class="kpi-note">A simple % salary cost per realised hire.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Capacity leakage proxy</div>
+          <div class="kpi-value" id="att_capacity">—</div>
+          <div class="kpi-note">Assumes a portion of salary value lost to empty seats.</div>
+        </div>
+      </div>
+
+      <div class="footer"><strong>Tip:</strong> Use this when customers say “we can’t scale fast enough”.</div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">Inputs</div>
+      <div class="widgets">
+        <div class="widget">
+          <div class="widget-h">Growth & hiring friction</div>
+          <div class="row">
+            <div class="field"><label>Target net growth (12 months)</label><input id="targetGrowth" type="number" min="0" step="1" /></div>
+            <div class="field"><label>Offer acceptance rate (%)</label><input id="acceptanceRate" type="number" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Avg time-to-hire (days)</label><input id="timeToHire" type="number" min="1" step="1" /></div>
+            <div class="field"><label>Recruiting cost proxy (% salary / hire)</label><input id="recruitCostPct" type="number" min="0" max="50" step="0.5" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
