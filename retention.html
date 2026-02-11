@@ -1,94 +1,168 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Retention — Workforce Economics Lab</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workforce Economics Lab — Retention</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="wrap header">
-    <div class="brand">
-      <div class="logo">W</div>
-      <div>
-        <div class="title">Workforce Economics Lab</div>
-        <div class="subtitle">Retention exposure & leaver cost modelling</div>
+
+  <!-- Sticky header -->
+  <div class="header">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div>
+          <div class="title">Workforce Economics Lab</div>
+          <div class="subtitle">Retention model (UK) — baseline vs marginal improvement</div>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <div class="field">
+          <label for="industrySelect">Industry</label>
+          <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="companyName">Company</label>
+          <input id="companyName" type="text" placeholder="e.g. Acme Ltd" />
+        </div>
+
+        <div class="field">
+          <label for="companyLogo">Logo</label>
+          <input id="companyLogo" type="file" accept="image/*" />
+        </div>
+
+        <button class="btn primary" id="btnShare">Copy share link</button>
+        <button class="btn" id="btnPrint">Print report</button>
       </div>
     </div>
+  </div>
 
-    <div class="top-controls">
-      <div class="field"><label>Industry</label><select id="industry"></select></div>
-      <div class="field"><label>Region</label><select id="region"></select></div>
-      <div class="field"><label>Headcount</label><input id="headcount" type="number" min="1" /></div>
-      <div class="field"><label>Avg salary (£)</label><input id="salary" type="number" min="0" /></div>
-    </div>
-  </header>
+  <div class="wrap">
 
-  <nav class="nav">
-    <a href="./index.html">Overview</a>
-    <a href="./retention.html">Retention</a>
-    <a href="./attraction.html">Attraction & scaling</a>
-    <a href="./economics.html">Economics</a>
-    <a href="./news.html">News</a>
-  </nav>
-
-  <main class="wrap grid">
-    <section class="card">
-      <div class="score-row">
-        <div>
-          <div class="card-title">Retention module</div>
-          <div class="tiny muted" id="retentionHint">—</div>
-        </div>
-        <div>
-          <div class="tiny muted">Engagement score</div>
-          <div class="score-big" id="engagementScore">—</div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">Estimated leavers (12 months)</div>
-          <div class="kpi-value" id="ret_leavers">—</div>
-          <div class="kpi-note">Role-adjusted by frontline/manager/specialist mix.</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Attrition leakage (12 months)</div>
-          <div class="kpi-value" id="ret_cost">—</div>
-          <div class="kpi-note">Replacement cost proxy by role (as % of salary).</div>
-        </div>
-      </div>
-
-      <div class="footer"><strong>Tip:</strong> Use this to quantify the “cost of doing nothing” in the next 12 months.</div>
-    </section>
-
-    <section class="card">
-      <div class="card-title">Inputs</div>
-      <div class="widgets">
-        <div class="widget">
-          <div class="widget-h">Workforce mix</div>
-          <div class="row">
-            <div class="field"><label>Frontline (%)</label><input id="mixFrontline" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Managers (%)</label><input id="mixManagers" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Specialists (%)</label><input id="mixSpecialists" type="number" min="0" max="100" /></div>
-            <div class="field"><label>&nbsp;</label><div class="tiny muted" id="mixHint">—</div></div>
+    <!-- Printable report header -->
+    <section id="reportHeader" aria-hidden="true">
+      <div class="row">
+        <div class="left">
+          <img id="reportLogo" alt="Company logo" />
+          <div>
+            <div id="reportCompany" style="font-weight:900;font-size:16px;">Company</div>
+            <div class="meta" id="reportMeta">Workforce Economics Lab • UK</div>
           </div>
         </div>
-
-        <div class="widget">
-          <div class="widget-h">Attrition + replacement cost assumptions</div>
-          <div class="row">
-            <div class="field"><label>Attrition rate (% / year)</label><input id="attritionRate" type="number" min="0" max="100" step="0.5" /></div>
-            <div class="field"><label>Replacement cost (Frontline % salary)</label><input id="replFrontline" type="number" min="0" max="300" /></div>
-            <div class="field"><label>Replacement cost (Managers % salary)</label><input id="replManagers" type="number" min="0" max="300" /></div>
-            <div class="field"><label>Replacement cost (Specialists % salary)</label><input id="replSpecialists" type="number" min="0" max="300" /></div>
-          </div>
-          <div class="tiny muted">Proxy only. Adjust to match your internal benchmarks.</div>
+        <div class="badge">
+          Industry: <span id="reportIndustry">Industry</span>
         </div>
       </div>
     </section>
-  </main>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <a class="pill" href="./index.html">Overview</a>
+      <a class="pill active" href="./retention.html">Retention</a>
+      <a class="pill" href="./attraction.html">Attraction</a>
+      <a class="pill" href="./economics.html">Economics</a>
+      <a class="pill" href="./news.html">News</a>
+    </nav>
+
+    <div class="grid cols2">
+
+      <!-- Inputs -->
+      <section class="card">
+        <h2>Inputs</h2>
+        <p>Keep the assumptions conservative. Model “marginal improvement” (e.g. -2pp turnover) to build a credible case.</p>
+
+        <div class="form">
+          <div class="form-row two">
+            <div class="input">
+              <label for="headcount">Headcount</label>
+              <input id="headcount" type="number" min="0" value="500" />
+            </div>
+            <div class="input">
+              <label for="avgSalary">Average salary (£)</label>
+              <input id="avgSalary" type="number" min="0" value="35000" />
+            </div>
+          </div>
+
+          <div class="form-row two">
+            <div class="input">
+              <label for="turnoverRate">Annual turnover rate (%)</label>
+              <input id="turnoverRate" type="number" min="0" max="100" step="0.1" value="18" />
+            </div>
+            <div class="input">
+              <label for="retentionImprovement">Marginal improvement (percentage points)</label>
+              <input id="retentionImprovement" type="number" step="0.1" value="2" />
+            </div>
+          </div>
+
+          <div class="badge" id="industryRef">
+            Baseline assumptions load from the selected industry.
+          </div>
+        </div>
+      </section>
+
+      <!-- Outputs -->
+      <section class="card">
+        <h2>Outputs</h2>
+        <p>Baseline cost of churn vs an “improved” scenario using the marginal improvement.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Annual leavers</div>
+            <div class="value" id="kpiLeavers">—</div>
+            <div class="hint">Headcount × turnover</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Annual churn cost</div>
+            <div class="value" id="kpiChurnCost">—</div>
+            <div class="hint">Leavers × cost to replace (industry baseline)</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Annual saving (scenario)</div>
+            <div class="value" id="kpiSaving">—</div>
+            <div class="hint">Baseline cost − improved cost</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Engagement score</div>
+            <div class="value" id="kpiEngagement">—</div>
+            <div class="hint">Simple indicator (0–100)</div>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Turnover (baseline)</div>
+            <div class="value" id="kpiTurnoverBase">—</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Turnover (improved)</div>
+            <div class="value" id="kpiTurnoverImproved">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;" class="badge">
+          Use Print report → then “Save as PDF” for a clean business-case doc.
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      Built by Jack Dewhurst — Workforce Economics
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
 
   <script src="./app.js"></script>
 </body>
