@@ -1,25 +1,25 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Workforce Economics Lab — Retention</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body>
 
-  <!-- Sticky header -->
-  <div class="header">
-    <div class="inner">
+<body>
+  <!-- Top header / global controls -->
+  <header class="topbar">
+    <div class="wrap topbar__inner">
       <div class="brand">
         <div class="logo">W</div>
         <div>
-          <div class="title">Workforce Economics Lab</div>
-          <div class="subtitle">Retention model (UK) — baseline vs marginal improvement</div>
+          <div class="brand__title">Workforce Economics Lab</div>
+          <div class="brand__sub">A mini tool hub for workforce risk + improvement modelling (UK)</div>
         </div>
       </div>
 
-      <div class="top-controls">
+      <div class="topbar__controls">
         <div class="field">
           <label for="industrySelect">Industry</label>
           <select id="industrySelect"></select>
@@ -31,139 +31,144 @@
         </div>
 
         <div class="field">
-          <label for="companyLogo">Logo</label>
+          <label for="companyLogo">Logo (optional)</label>
           <input id="companyLogo" type="file" accept="image/*" />
         </div>
 
-        <button class="btn primary" id="btnShare">Copy share link</button>
-        <button class="btn" id="btnPrint">Print report</button>
+        <div class="topbar__actions">
+          <button id="btnShare" class="btn btn--ghost" type="button">Copy share link</button>
+          <button id="btnPrint" class="btn" type="button">Print report</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
-
-    <!-- Printable report header -->
-    <section id="reportHeader" aria-hidden="true">
-      <div class="row">
-        <div class="left">
-          <img id="reportLogo" alt="Company logo" />
-          <div>
-            <div id="reportCompany" style="font-weight:900;font-size:16px;">Company</div>
-            <div class="meta" id="reportMeta">Workforce Economics Lab • UK</div>
-          </div>
-        </div>
-        <div class="badge">
-          Industry: <span id="reportIndustry">Industry</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Nav -->
-    <nav class="nav">
-      <a class="pill" href="./index.html">Overview</a>
-      <a class="pill active" href="./retention.html">Retention</a>
-      <a class="pill" href="./attraction.html">Attraction</a>
-      <a class="pill" href="./economics.html">Economics</a>
-      <a class="pill" href="./news.html">News</a>
+    <nav class="wrap tabs">
+      <a class="tab" href="./index.html">Overview</a>
+      <a class="tab tab--active" href="./retention.html">Retention</a>
+      <a class="tab" href="./attraction.html">Attraction</a>
+      <a class="tab" href="./economics.html">Economics</a>
+      <a class="tab" href="./news.html">News</a>
     </nav>
+  </header>
 
-    <div class="grid cols2">
-
+  <main class="wrap">
+    <section class="grid-2">
       <!-- Inputs -->
-      <section class="card">
-        <h2>Inputs</h2>
-        <p>Keep the assumptions conservative. Model “marginal improvement” (e.g. -2pp turnover) to build a credible case.</p>
+      <article class="card">
+        <div class="card__header">
+          <h2>Inputs</h2>
+          <p class="muted">
+            Keep the assumptions conservative. Model a small “marginal improvement” (e.g. -2pp turnover)
+            to build a credible case.
+          </p>
+        </div>
 
-        <div class="form">
-          <div class="form-row two">
-            <div class="input">
-              <label for="headcount">Headcount</label>
-              <input id="headcount" type="number" min="0" value="500" />
-            </div>
-            <div class="input">
-              <label for="avgSalary">Average salary (£)</label>
-              <input id="avgSalary" type="number" min="0" value="35000" />
-            </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="headcount">Headcount</label>
+            <input id="headcount" type="number" min="0" step="1" value="500" />
           </div>
 
-          <div class="form-row two">
-            <div class="input">
-              <label for="turnoverRate">Annual turnover rate (%)</label>
-              <input id="turnoverRate" type="number" min="0" max="100" step="0.1" value="18" />
-            </div>
-            <div class="input">
-              <label for="retentionImprovement">Marginal improvement (percentage points)</label>
-              <input id="retentionImprovement" type="number" step="0.1" value="2" />
-            </div>
+          <div class="field">
+            <label for="avgSalary">Average salary (£)</label>
+            <input id="avgSalary" type="number" min="0" step="100" value="35000" />
           </div>
 
-          <div class="badge" id="industryRef">
-            Baseline assumptions load from the selected industry.
+          <div class="field">
+            <label for="turnoverRate">Annual turnover rate (%)</label>
+            <input id="turnoverRate" type="number" min="0" max="100" step="0.1" value="18" />
+          </div>
+
+          <div class="field">
+            <label for="retentionImprovement">Marginal improvement (percentage points)</label>
+            <input id="retentionImprovement" type="number" min="0" max="50" step="0.1" value="2" />
           </div>
         </div>
-      </section>
+
+        <div class="note">
+          Baseline assumptions auto-load from the selected industry.
+        </div>
+      </article>
 
       <!-- Outputs -->
-      <section class="card">
-        <h2>Outputs</h2>
-        <p>Baseline cost of churn vs an “improved” scenario using the marginal improvement.</p>
+      <article class="card">
+        <div class="card__header">
+          <h2>Outputs</h2>
+          <p class="muted">
+            Baseline cost of churn vs an “improved” scenario using the marginal improvement.
+          </p>
+        </div>
 
-        <div class="kpis">
+        <div class="kpi-grid">
           <div class="kpi">
-            <div class="label">Annual leavers</div>
-            <div class="value" id="kpiLeavers">—</div>
-            <div class="hint">Headcount × turnover</div>
+            <div class="kpi__label">Annual leavers</div>
+            <div class="kpi__value" id="kpiLeavers">—</div>
+            <div class="kpi__hint">Headcount × turnover</div>
           </div>
 
           <div class="kpi">
-            <div class="label">Annual churn cost</div>
-            <div class="value" id="kpiChurnCost">—</div>
-            <div class="hint">Leavers × cost to replace (industry baseline)</div>
+            <div class="kpi__label">Annual churn cost</div>
+            <div class="kpi__value" id="kpiChurnCost">—</div>
+            <div class="kpi__hint">Leavers × cost to replace (industry baseline)</div>
           </div>
 
           <div class="kpi">
-            <div class="label">Annual saving (scenario)</div>
-            <div class="value" id="kpiSaving">—</div>
-            <div class="hint">Baseline cost − improved cost</div>
+            <div class="kpi__label">Annual saving (scenario)</div>
+            <div class="kpi__value" id="kpiSaving">—</div>
+            <div class="kpi__hint">Baseline cost − improved cost</div>
           </div>
 
           <div class="kpi">
-            <div class="label">Engagement score</div>
-            <div class="value" id="kpiEngagement">—</div>
-            <div class="hint">Simple indicator (0–100)</div>
+            <div class="kpi__label">Engagement score</div>
+            <div class="kpi__value" id="kpiEngagement">—</div>
+            <div class="kpi__hint">Simple indicator (0–100)</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Turnover (baseline)</div>
+            <div class="kpi__value" id="kpiTurnoverBaseline">—</div>
+            <div class="kpi__hint">Selected industry baseline</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Turnover (improved)</div>
+            <div class="kpi__value" id="kpiTurnoverImproved">—</div>
+            <div class="kpi__hint">Baseline − marginal improvement</div>
           </div>
         </div>
 
-        <hr class="sep" />
+        <div class="note">
+          Tip: Use <strong>Print report</strong> → then “Save as PDF” for a clean business-case doc.
+        </div>
+      </article>
+    </section>
 
-        <div class="kpis">
-          <div class="kpi">
-            <div class="label">Turnover (baseline)</div>
-            <div class="value" id="kpiTurnoverBase">—</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Turnover (improved)</div>
-            <div class="value" id="kpiTurnoverImproved">—</div>
+    <!-- Print-friendly report header -->
+    <section class="report card print-only">
+      <div class="report__top">
+        <div class="report__left">
+          <img id="reportLogo" alt="Company logo" class="report__logo" />
+          <div>
+            <div class="report__company" id="reportCompany">Company</div>
+            <div class="report__meta" id="reportIndustry">Industry</div>
+            <div class="report__meta" id="reportMeta">Workforce Economics Lab • UK</div>
           </div>
         </div>
+      </div>
 
-        <div style="margin-top:12px;" class="badge">
-          Use Print report → then “Save as PDF” for a clean business-case doc.
-        </div>
-      </section>
-    </div>
+      <hr class="sep" />
 
-    <div class="footer">
-      Built by Jack Dewhurst — Workforce Economics
-    </div>
-  </div>
+      <div class="report__body">
+        <h3>Retention impact summary</h3>
+        <p class="muted">
+          This report models a conservative churn reduction scenario based on industry baselines and the inputs provided.
+          Use it as a discussion starter and sanity-check assumptions with your finance/people teams.
+        </p>
+      </div>
+    </section>
+  </main>
 
   <script src="./app.js"></script>
 </body>
 </html>
 
-
-  <script src="./app.js"></script>
-</body>
-</html>
