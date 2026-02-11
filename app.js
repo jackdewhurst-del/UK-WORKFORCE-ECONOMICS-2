@@ -1,13 +1,11 @@
 /* Workforce Economics Lab
-   Stable, multi-page, no loops, no input rewriting.
+   Stable, multi-page, no loops, auto industry baselines.
 */
 
 (function () {
-
   // --------------------------
   // Helpers
   // --------------------------
-
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
@@ -55,50 +53,29 @@
   }
 
   // --------------------------
-  // Industry baselines
+  // Industry baselines (expandable)
+  // turnoverRate = annual %
+  // costToReplacePctSalary = % of salary
+  // timeToHireDays = days
+  // engagementIndex = 0–100
   // --------------------------
-
   const INDUSTRIES = [
-    {
-      key: "hospitality",
-      label: "Hospitality",
-      baselines: {
-        turnoverRate: 35,
-        costToReplacePctSalary: 25,
-        timeToHireDays: 28,
-        engagementIndex: 48
-      }
-    },
-    {
-      key: "retail",
-      label: "Retail",
-      baselines: {
-        turnoverRate: 28,
-        costToReplacePctSalary: 22,
-        timeToHireDays: 30,
-        engagementIndex: 52
-      }
-    },
-    {
-      key: "healthcare",
-      label: "Healthcare",
-      baselines: {
-        turnoverRate: 18,
-        costToReplacePctSalary: 30,
-        timeToHireDays: 45,
-        engagementIndex: 50
-      }
-    },
-    {
-      key: "professional_services",
-      label: "Professional Services",
-      baselines: {
-        turnoverRate: 12,
-        costToReplacePctSalary: 35,
-        timeToHireDays: 50,
-        engagementIndex: 60
-      }
-    }
+    { key: "hospitality", label: "Hospitality", baselines: { turnoverRate: 35, costToReplacePctSalary: 25, timeToHireDays: 28, engagementIndex: 48 } },
+    { key: "retail", label: "Retail", baselines: { turnoverRate: 28, costToReplacePctSalary: 22, timeToHireDays: 30, engagementIndex: 52 } },
+    { key: "healthcare", label: "Healthcare", baselines: { turnoverRate: 18, costToReplacePctSalary: 30, timeToHireDays: 45, engagementIndex: 50 } },
+    { key: "professional_services", label: "Professional Services", baselines: { turnoverRate: 12, costToReplacePctSalary: 35, timeToHireDays: 50, engagementIndex: 60 } },
+
+    { key: "manufacturing", label: "Manufacturing", baselines: { turnoverRate: 16, costToReplacePctSalary: 28, timeToHireDays: 42, engagementIndex: 56 } },
+    { key: "construction", label: "Construction", baselines: { turnoverRate: 20, costToReplacePctSalary: 26, timeToHireDays: 40, engagementIndex: 50 } },
+    { key: "logistics", label: "Logistics & Warehousing", baselines: { turnoverRate: 24, costToReplacePctSalary: 22, timeToHireDays: 32, engagementIndex: 49 } },
+    { key: "education", label: "Education", baselines: { turnoverRate: 12, costToReplacePctSalary: 30, timeToHireDays: 55, engagementIndex: 57 } },
+    { key: "public_sector", label: "Public Sector", baselines: { turnoverRate: 10, costToReplacePctSalary: 28, timeToHireDays: 60, engagementIndex: 58 } },
+    { key: "finance", label: "Financial Services", baselines: { turnoverRate: 14, costToReplacePctSalary: 40, timeToHireDays: 55, engagementIndex: 61 } },
+    { key: "tech", label: "Technology / SaaS", baselines: { turnoverRate: 16, costToReplacePctSalary: 45, timeToHireDays: 50, engagementIndex: 62 } },
+    { key: "care", label: "Care Homes", baselines: { turnoverRate: 32, costToReplacePctSalary: 24, timeToHireDays: 35, engagementIndex: 46 } },
+    { key: "hospitality_travel", label: "Travel & Leisure", baselines: { turnoverRate: 30, costToReplacePctSalary: 25, timeToHireDays: 30, engagementIndex: 50 } },
+    { key: "utilities", label: "Utilities", baselines: { turnoverRate: 9, costToReplacePctSalary: 28, timeToHireDays: 55, engagementIndex: 60 } },
+    { key: "legal", label: "Legal", baselines: { turnoverRate: 12, costToReplacePctSalary: 42, timeToHireDays: 60, engagementIndex: 60 } }
   ];
 
   function getIndustry(key) {
@@ -108,8 +85,7 @@
   // --------------------------
   // URL + local state
   // --------------------------
-
-  const STORAGE_KEY = "wel_state_v1";
+  const STORAGE_KEY = "wel_state_v2";
 
   function readURLState() {
     const p = new URLSearchParams(location.search);
@@ -121,7 +97,7 @@
   function writeURLState(partial) {
     const p = new URLSearchParams(location.search);
     Object.entries(partial).forEach(([k, v]) => {
-      if (!v) p.delete(k);
+      if (v === null || v === undefined || v === "") p.delete(k);
       else p.set(k, String(v));
     });
     history.replaceState({}, "", `${location.pathname}?${p.toString()}`);
@@ -140,11 +116,24 @@
   }
 
   // --------------------------
+  // Apply industry baselines into inputs (auto-populate)
+  // --------------------------
+  function applyIndustryBaselinesToInputs(industry) {
+    // Retention page baseline turnover auto-set
+    const turnoverEl = $("#turnoverRate");
+    if (turnoverEl) turnoverEl.value = industry.baselines.turnoverRate;
+
+    // Attraction page baseline time-to-hire auto-set
+    const tthEl = $("#timeToHire");
+    if (tthEl) tthEl.value = industry.baselines.timeToHireDays;
+
+    // (Optional) any other baseline inputs you add later can be wired here
+  }
+
+  // --------------------------
   // Header logic
   // --------------------------
-
   function initTopbar() {
-
     const industrySelect = $("#industrySelect");
     if (!industrySelect) return;
 
@@ -158,16 +147,19 @@
       .join("");
 
     const state = loadState();
-    industrySelect.value = state.industry || INDUSTRIES[0].key;
+    const startIndustry = state.industry || INDUSTRIES[0].key;
+    industrySelect.value = startIndustry;
 
-    applyReportHeader(
-      industrySelect.value,
-      state.company || "",
-      state.logo || ""
-    );
+    const industry = getIndustry(startIndustry);
+
+    applyReportHeader(startIndustry, state.company || "", state.logo || "");
+    applyIndustryBaselinesToInputs(industry);
 
     industrySelect.addEventListener("change", () => {
       saveState({ industry: industrySelect.value });
+      const newIndustry = getIndustry(industrySelect.value);
+      applyIndustryBaselinesToInputs(newIndustry);
+      applyReportHeader(industrySelect.value, companyName?.value || "", loadState().logo || "");
       recalcAll();
     });
 
@@ -179,13 +171,13 @@
     }
 
     if (companyLogo) {
-      companyLogo.addEventListener("change", async () => {
+      companyLogo.addEventListener("change", () => {
         const file = companyLogo.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = () => {
           saveState({ logo: reader.result });
-          applyReportHeader(industrySelect.value, companyName.value, reader.result);
+          applyReportHeader(industrySelect.value, companyName?.value || "", reader.result);
         };
         reader.readAsDataURL(file);
       });
@@ -195,13 +187,11 @@
       btnShare.addEventListener("click", () => {
         navigator.clipboard.writeText(location.href);
         btnShare.textContent = "Copied ✓";
-        setTimeout(() => btnShare.textContent = "Copy share link", 1500);
+        setTimeout(() => (btnShare.textContent = "Copy share link"), 1500);
       });
     }
 
-    if (btnPrint) {
-      btnPrint.addEventListener("click", () => window.print());
-    }
+    if (btnPrint) btnPrint.addEventListener("click", () => window.print());
   }
 
   function applyReportHeader(industryKey, company, logo) {
@@ -221,9 +211,21 @@
   }
 
   // --------------------------
+  // Engagement score (simple & stable)
+  // --------------------------
+  function computeEngagementScore(industry, retentionImprovementPP, attractionImprovementDays) {
+    // Conservative indicator only (not a claim). Just a narrative score.
+    const base = industry.baselines.engagementIndex;
+
+    const bumpFromRetention = clamp(retentionImprovementPP * 2.0, 0, 20);
+    const bumpFromAttraction = clamp((attractionImprovementDays / 10) * 1.5, 0, 15);
+
+    return clamp(base + bumpFromRetention + bumpFromAttraction, 0, 100);
+  }
+
+  // --------------------------
   // RETENTION
   // --------------------------
-
   function readRetentionInputs(industry) {
     const headcount = $("#headcount");
     const salary = $("#avgSalary");
@@ -238,13 +240,12 @@
   }
 
   function computeRetention(i, industry) {
-
     const replaceCostPct = industry.baselines.costToReplacePctSalary / 100;
 
     const leavers = i.headcount * (i.turnover / 100);
     const cost = leavers * i.avgSalary * replaceCostPct;
 
-    const improvedTurnover = i.turnover - i.improvement;
+    const improvedTurnover = clamp(i.turnover - i.improvement, 0, 100);
     const improvedLeavers = i.headcount * (improvedTurnover / 100);
     const improvedCost = improvedLeavers * i.avgSalary * replaceCostPct;
 
@@ -252,21 +253,23 @@
       leavers,
       cost,
       saving: cost - improvedCost,
+      baselineTurnover: i.turnover,
       improvedTurnover
     };
   }
 
-  function renderRetention(r) {
+  function renderRetention(r, engagementScore) {
     setText("#kpiLeavers", Math.round(r.leavers).toLocaleString());
     setText("#kpiChurnCost", formatGBP(r.cost));
     setText("#kpiSaving", formatGBP(r.saving));
+    setText("#kpiTurnoverBaseline", formatPct(r.baselineTurnover));
     setText("#kpiTurnoverImproved", formatPct(r.improvedTurnover));
+    setText("#kpiEngagement", Math.round(engagementScore).toString());
   }
 
   // --------------------------
   // ATTRACTION
   // --------------------------
-
   function readAttractionInputs(industry) {
     const open = $("#openRoles");
     const salary = $("#avgSalary");
@@ -282,15 +285,15 @@
   }
 
   function computeAttraction(i) {
-
     const daily = i.avgSalary / 260;
     const cost = i.openRoles * daily * i.timeToHire;
 
-    const improved = i.openRoles * daily * (i.timeToHire - i.improvement);
+    const improvedTTH = clamp(i.timeToHire - i.improvement, 0, 365);
+    const improvedCost = i.openRoles * daily * improvedTTH;
 
     return {
       cost,
-      saving: cost - improved
+      saving: cost - improvedCost
     };
   }
 
@@ -302,7 +305,6 @@
   // --------------------------
   // ECONOMICS
   // --------------------------
-
   function readEconomicsInputs() {
     const headcount = $("#econHeadcount");
     const salary = $("#econAvgSalary");
@@ -312,20 +314,20 @@
     if (!headcount || !salary || !ni || !adoption || !marginal) return null;
 
     return {
-      headcount: parseNumber(headcount.value),
-      avgSalary: parseNumber(salary.value),
-      ni: parseNumber(ni.value),
-      adoption: parseNumber(adoption.value),
-      marginal: parseNumber(marginal.value)
+      headcount: clamp(parseNumber(headcount.value), 0, 500000),
+      avgSalary: clamp(parseNumber(salary.value), 0, 500000),
+      ni: clamp(parseNumber(ni.value), 0, 40),
+      adoption: clamp(parseNumber(adoption.value), 0, 100),
+      marginal: clamp(parseNumber(marginal.value), 0, 10)
     };
   }
 
   function computeEconomics(i) {
-
     const payroll = i.headcount * i.avgSalary;
     const niCost = payroll * (i.ni / 100);
     const optimisation = payroll * (i.marginal / 100);
 
+    // Conservative eligibility factor
     const eligible = payroll * 0.08 * (i.adoption / 100);
     const niSaving = eligible * (i.ni / 100);
 
@@ -342,21 +344,25 @@
   // --------------------------
   // Main recalculation
   // --------------------------
-
   const recalcAll = debounce(() => {
-
     const state = loadState();
     const industry = getIndustry(state.industry || INDUSTRIES[0].key);
 
     const rInputs = readRetentionInputs(industry);
-    if (rInputs) renderRetention(computeRetention(rInputs, industry));
-
     const aInputs = readAttractionInputs(industry);
+
+    const engagement = computeEngagementScore(
+      industry,
+      rInputs ? rInputs.improvement : 0,
+      aInputs ? aInputs.improvement : 0
+    );
+
+    if (rInputs) renderRetention(computeRetention(rInputs, industry), engagement);
+
     if (aInputs) renderAttraction(computeAttraction(aInputs));
 
     const eInputs = readEconomicsInputs();
     if (eInputs) renderEconomics(computeEconomics(eInputs));
-
   }, 80);
 
   function bindInputs() {
@@ -374,6 +380,7 @@
   });
 
 })();
+
 
 
 
