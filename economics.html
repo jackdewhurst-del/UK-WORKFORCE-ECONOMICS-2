@@ -1,114 +1,157 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Economics — Workforce Economics Lab</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workforce Economics Lab — Economics</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="wrap header">
-    <div class="brand">
-      <div class="logo">W</div>
-      <div>
-        <div class="title">Workforce Economics Lab</div>
-        <div class="subtitle">NI optimisation, pensions, engagement & renewal risk</div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div>
+          <div class="title">Workforce Economics Lab</div>
+          <div class="subtitle">Workforce cost pressure & marginal improvement modelling</div>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <div class="field">
+          <label for="industrySelect">Industry</label>
+          <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="companyName">Company</label>
+          <input id="companyName" type="text" placeholder="e.g. Acme Ltd" />
+        </div>
+
+        <div class="field">
+          <label for="companyLogo">Logo</label>
+          <input id="companyLogo" type="file" accept="image/*" />
+        </div>
+
+        <button class="btn primary" id="btnShare">Copy share link</button>
+        <button class="btn" id="btnPrint">Print report</button>
       </div>
     </div>
+  </div>
 
-    <div class="top-controls">
-      <div class="field"><label>Industry</label><select id="industry"></select></div>
-      <div class="field"><label>Region</label><select id="region"></select></div>
-      <div class="field"><label>Headcount</label><input id="headcount" type="number" min="1" /></div>
-      <div class="field"><label>Avg salary (£)</label><input id="salary" type="number" min="0" /></div>
-    </div>
-  </header>
+  <div class="wrap">
 
-  <nav class="nav">
-    <a href="./index.html">Overview</a>
-    <a href="./retention.html">Retention</a>
-    <a href="./attraction.html">Attraction & scaling</a>
-    <a href="./economics.html">Economics</a>
-    <a href="./news.html">News</a>
-  </nav>
-
-  <main class="wrap grid">
-    <section class="card">
-      <div class="score-row">
-        <div>
-          <div class="card-title">Economics module</div>
-          <div class="tiny muted">Highlights under-adoption and contribution gaps (proxies) that affect cost + employee outcomes.</div>
-        </div>
-        <div>
-          <div class="tiny muted">Engagement score</div>
-          <div class="score-big" id="engagementScore">—</div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">NI optimisation gap (12 months)</div>
-          <div class="kpi-value" id="eco_ni_gap">—</div>
-          <div class="kpi-note"><span id="eco_ni_users">—</span> eligible employees not using salary sacrifice (proxy).</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Pension gap exposure (proxy)</div>
-          <div class="kpi-value" id="eco_pension_gap">—</div>
-          <div class="kpi-note">Gap vs target: <span id="eco_pension_pp">—</span></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Benefits value captured (proxy)</div>
-          <div class="kpi-value" id="eco_value">—</div>
-          <div class="kpi-note"><span id="eco_engaged">—</span> engaged users.</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Estimated improvement impact</div>
-          <div class="kpi-value" id="totalImpact">—</div>
-          <div class="kpi-note" id="totalImpactNote">—</div>
-        </div>
-      </div>
-
-      <div class="footer"><strong>Tip:</strong> Use this for “renewal”, “we need to cut costs”, or “benefits aren’t landing”.</div>
-    </section>
-
-    <section class="card">
-      <div class="card-title">Inputs</div>
-      <div class="widgets">
-        <div class="widget">
-          <div class="widget-h">NI + salary sacrifice</div>
-          <div class="row">
-            <div class="field"><label>Current sacrifice uptake (%)</label><input id="sacrificeUptake" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Estimated eligible workforce (%)</label><input id="eligiblePct" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Employer NI rate (%)</label><input id="niRate" type="number" min="0" max="30" step="0.1" /></div>
-            <div class="field"><label>Avg sacrifice amount (% salary)</label><input id="avgSacrificePct" type="number" min="0" max="25" step="0.5" /></div>
+    <!-- Printable report header -->
+    <section id="reportHeader" aria-hidden="true">
+      <div class="row">
+        <div class="left">
+          <img id="reportLogo" alt="Company logo" />
+          <div>
+            <div id="reportCompany" style="font-weight:900;font-size:16px;">Company</div>
+            <div class="meta" id="reportMeta">Workforce Economics Lab • UK</div>
           </div>
         </div>
-
-        <div class="widget">
-          <div class="widget-h">Pension contributions</div>
-          <div class="row">
-            <div class="field"><label>Avg employee contribution (%)</label><input id="pensionEmployee" type="number" min="0" max="40" step="0.5" /></div>
-            <div class="field"><label>Avg employer contribution (%)</label><input id="pensionEmployer" type="number" min="0" max="40" step="0.5" /></div>
-            <div class="field"><label>Target total contribution (%)</label><input id="pensionTarget" type="number" min="0" max="40" step="0.5" /></div>
-            <div class="field"><label>Retirement horizon (years)</label><input id="retireYears" type="number" min="1" max="50" step="1" /></div>
-          </div>
-        </div>
-
-        <div class="widget">
-          <div class="widget-h">Engagement & renewal risk</div>
-          <div class="row">
-            <div class="field"><label>Eligible employees using benefits (%)</label><input id="benefitUsage" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Renewal uplift risk (% cost increase)</label><input id="renewalIncrease" type="number" min="0" max="100" /></div>
-            <div class="field"><label>Usage value proxy (£/user/year)</label><input id="valuePerUser" type="number" min="0" step="10" /></div>
-            <div class="field"><label>Eligible users (%)</label><input id="benefitEligiblePct" type="number" min="0" max="100" step="1" /></div>
-          </div>
+        <div class="badge">
+          Industry: <span id="reportIndustry">Industry</span>
         </div>
       </div>
     </section>
-  </main>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <a class="pill" href="./index.html">Overview</a>
+      <a class="pill" href="./retention.html">Retention</a>
+      <a class="pill" href="./attraction.html">Attraction</a>
+      <a class="pill active" href="./economics.html">Economics</a>
+      <a class="pill" href="./news.html">News</a>
+    </nav>
+
+    <div class="grid cols2">
+
+      <!-- Inputs -->
+      <section class="card">
+        <h2>Inputs</h2>
+        <p>Model employer cost pressure (NI + salary leverage) and marginal optimisation.</p>
+
+        <div class="form">
+          <div class="form-row two">
+            <div class="input">
+              <label for="econHeadcount">Headcount</label>
+              <input id="econHeadcount" type="number" min="0" value="500" />
+            </div>
+            <div class="input">
+              <label for="econAvgSalary">Average salary (£)</label>
+              <input id="econAvgSalary" type="number" min="0" value="35000" />
+            </div>
+          </div>
+
+          <div class="form-row two">
+            <div class="input">
+              <label for="employerNI">Employer NI rate (%)</label>
+              <input id="employerNI" type="number" step="0.1" value="13.8" />
+            </div>
+            <div class="input">
+              <label for="salarySacrificeAdoption">Salary sacrifice adoption (%)</label>
+              <input id="salarySacrificeAdoption" type="number" step="1" value="20" />
+            </div>
+          </div>
+
+          <div class="form-row two">
+            <div class="input">
+              <label for="marginalImprovement">Marginal cost optimisation (%)</label>
+              <input id="marginalImprovement" type="number" step="0.1" value="1" />
+            </div>
+          </div>
+
+          <div class="badge">
+            Conservative modelling. Avoid over-claiming savings.
+          </div>
+        </div>
+      </section>
+
+      <!-- Outputs -->
+      <section class="card">
+        <h2>Outputs</h2>
+        <p>Employer cost exposure and potential optimisation levers.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Total payroll</div>
+            <div class="value" id="kpiPayroll">—</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Employer NI cost</div>
+            <div class="value" id="kpiNI">—</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Potential optimisation</div>
+            <div class="value" id="kpiOptimisation">—</div>
+          </div>
+
+          <div class="kpi">
+            <div class="label">Estimated NI saving via adoption</div>
+            <div class="value" id="kpiNISaving">—</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;" class="badge">
+          Even 1–2% structural optimisation at scale can materially offset NI increases.
+        </div>
+      </section>
+
+    </div>
+
+    <div class="footer">
+      Built by Jack Dewhurst — Workforce Economics
+    </div>
+
+  </div>
 
   <script src="./app.js"></script>
 </body>
 </html>
+
