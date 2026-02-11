@@ -47,7 +47,12 @@
     return new Date().toISOString().slice(0, 10);
   }
 
-  // ---------- Industry Baselines (edit over time + add sources) ----------
+  function setText(sel, value) {
+    const el = $(sel);
+    if (el) el.textContent = value;
+  }
+
+  // ---------- Industry Baselines ----------
   const INDUSTRIES = [
     {
       key: "hospitality",
@@ -59,9 +64,7 @@
         absenteeismDays: 6,
         engagementIndex: 48,
       },
-      sources: {
-        turnoverRate: [{ label: "Add source link", url: "#" }],
-      },
+      sources: { turnoverRate: [{ label: "Add source link", url: "#" }] },
     },
     {
       key: "retail",
@@ -133,7 +136,7 @@
       }
     })();
     const fromURL = readURLState();
-    return { ...fromStorage, ...fromURL }; // URL overrides storage
+    return { ...fromStorage, ...fromURL };
   }
 
   function saveState(partial) {
@@ -179,7 +182,7 @@
 
   function initTopbar() {
     const industrySelect = $("#industrySelect");
-    if (!industrySelect) return; // page might not have the header block
+    if (!industrySelect) return;
 
     const companyName = $("#companyName");
     const companyLogo = $("#companyLogo");
@@ -246,7 +249,7 @@
     }
   }
 
-  // ---------- Retention widget (only runs if those IDs exist on the page) ----------
+  // ---------- Retention widget ----------
   function readRetentionInputs(industry) {
     const headcountEl = $("#headcount");
     const avgSalaryEl = $("#avgSalary");
@@ -299,11 +302,6 @@
     };
   }
 
-  function setText(sel, value) {
-    const el = $(sel);
-    if (el) el.textContent = value;
-  }
-
   function renderRetention(results, industry) {
     setText("#kpiLeavers", Math.round(results.leavers).toLocaleString("en-GB"));
     setText("#kpiChurnCost", formatGBP(results.annualChurnCost));
@@ -318,6 +316,55 @@
     );
   }
 
+  // ---------- Attraction widget ----------
+  function readAttractionInputs(industry) {
+    const openRolesEl = $("#openRoles");
+    const avgSalaryEl = $("#avgSalary");
+    const timeToHireEl = $("#timeToHire");
+    const improvementEl = $("#attractionImprovement");
+
+    // If this page doesn't have these IDs, skip
+    if (!openRolesEl || !avgSalaryEl || !timeToHireEl) return null;
+
+    const openRoles = clamp(parseNumber(openRolesEl.value, 0), 0, 200000);
+    const avgSalary = clamp(parseNumber(avgSalaryEl.value, 0), 0, 500000);
+
+    const baselineTTH = industry.baselines.timeToHireDays;
+    const timeToHire = clamp(parseNumber(timeToHireEl.value, baselineTTH), 0, 365);
+
+    const improvementDays = improvementEl
+      ? clamp(parseNumber(improvementEl.value, 0), 0, 365)
+      : 0;
+
+    return { openRoles, avgSalary, timeToHire, improvementDays };
+  }
+
+  function computeAttraction(inputs) {
+    // Simple, conservative vacancy drag model:
+    // daily salary cost ≈ salary / 260 workdays
+    // vacancy cost ≈ openRoles × dailySalary × daysUnfilled
+    const dailySalary = inputs.avgSalary / 260;
+    const vacancyCost = inputs.openRoles * dailySalary * inputs.timeToHire;
+
+    const improvedTime = clamp(inputs.timeToHire - inputs.improvementDays, 0, 365);
+    const improvedCost = inputs.openRoles * dailySalary * improvedTime;
+
+    const saving = vacancyCost - improvedCost;
+
+    return { vacancyCost, saving, improvedTime };
+  }
+
+  function renderAttraction(results, industry) {
+    setText("#kpiVacancyCost", formatGBP(results.vacancyCost));
+    setText("#kpiAttractionSaving", formatGBP(results.saving));
+
+    // Optional: if you later add an industry ref block on attraction page
+    setText(
+      "#industryRefAttraction",
+      `Baseline time-to-hire for ${industry.label}: ${industry.baselines.timeToHireDays} days.`
+    );
+  }
+
   // ---------- Recalc pipeline ----------
   const recalcAll = debounce(() => {
     const st = loadState();
@@ -328,11 +375,17 @@
       const res = computeRetention(retentionInputs, industry);
       renderRetention(res, industry);
     }
+
+    const attractionInputs = readAttractionInputs(industry);
+    if (attractionInputs) {
+      const res = computeAttraction(attractionInputs);
+      renderAttraction(res, industry);
+    }
   }, 80);
 
   function bindInputs() {
     $$("input, select, textarea").forEach((el) => {
-      if (el.type === "file") return; // logo handled separately
+      if (el.type === "file") return;
       el.addEventListener("input", recalcAll);
       el.addEventListener("change", recalcAll);
     });
@@ -344,4 +397,5 @@
     recalcAll();
   });
 })();
+
 
