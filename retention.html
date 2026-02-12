@@ -6,16 +6,14 @@
   <title>Workforce Economics Lab — Retention</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-
 <body>
-  <!-- Top header / global controls -->
   <header class="topbar">
     <div class="wrap topbar__inner">
       <div class="brand">
         <div class="logo">W</div>
         <div>
           <div class="brand__title">Workforce Economics Lab</div>
-          <div class="brand__sub">A mini tool hub for workforce risk + improvement modelling (UK)</div>
+          <div class="brand__sub">Workforce risk + improvement modelling (UK)</div>
         </div>
       </div>
 
@@ -23,6 +21,11 @@
         <div class="field">
           <label for="industrySelect">Industry</label>
           <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="regionSelect">Region</label>
+          <select id="regionSelect"></select>
         </div>
 
         <div class="field">
@@ -45,7 +48,7 @@
     <nav class="wrap tabs">
       <a class="tab" href="./index.html">Overview</a>
       <a class="tab tab--active" href="./retention.html">Retention</a>
-      <a class="tab" href="./attraction.html">Attraction</a>
+      <a class="tab" href="./attraction.html">Attraction & scaling</a>
       <a class="tab" href="./economics.html">Economics</a>
       <a class="tab" href="./news.html">News</a>
     </nav>
@@ -53,13 +56,11 @@
 
   <main class="wrap">
     <section class="grid-2">
-      <!-- Inputs -->
       <article class="card">
         <div class="card__header">
           <h2>Inputs</h2>
           <p class="muted">
-            Keep the assumptions conservative. Model a small “marginal improvement” (e.g. -2pp turnover)
-            to build a credible case.
+            Model marginal improvement (e.g. -2pp turnover). Baselines auto-load from the selected industry.
           </p>
         </div>
 
@@ -76,26 +77,25 @@
 
           <div class="field">
             <label for="turnoverRate">Annual turnover rate (%)</label>
-            <input id="turnoverRate" type="number" min="0" max="100" step="0.1" value="18" />
+            <input id="turnoverRate" type="number" min="0" max="100" step="0.1" />
           </div>
 
           <div class="field">
-            <label for="retentionImprovement">Marginal improvement (percentage points)</label>
+            <label for="retentionImprovement">Marginal improvement (pp)</label>
             <input id="retentionImprovement" type="number" min="0" max="50" step="0.1" value="2" />
           </div>
         </div>
 
         <div class="note">
-          Baseline assumptions auto-load from the selected industry.
+          “Cost to replace” is an industry baseline (a conservative multiple of salary).
         </div>
       </article>
 
-      <!-- Outputs -->
       <article class="card">
         <div class="card__header">
           <h2>Outputs</h2>
           <p class="muted">
-            Baseline cost of churn vs an “improved” scenario using the marginal improvement.
+            Baseline churn cost vs improved scenario. Updates live as you type.
           </p>
         </div>
 
@@ -109,7 +109,7 @@
           <div class="kpi">
             <div class="kpi__label">Annual churn cost</div>
             <div class="kpi__value" id="kpiChurnCost">—</div>
-            <div class="kpi__hint">Leavers × cost to replace (industry baseline)</div>
+            <div class="kpi__hint">Leavers × cost to replace</div>
           </div>
 
           <div class="kpi">
@@ -121,29 +121,28 @@
           <div class="kpi">
             <div class="kpi__label">Engagement score</div>
             <div class="kpi__value" id="kpiEngagement">—</div>
-            <div class="kpi__hint">Simple indicator (0–100)</div>
+            <div class="kpi__hint">0–100 indicator</div>
           </div>
 
           <div class="kpi">
             <div class="kpi__label">Turnover (baseline)</div>
             <div class="kpi__value" id="kpiTurnoverBaseline">—</div>
-            <div class="kpi__hint">Selected industry baseline</div>
+            <div class="kpi__hint">Industry reference</div>
           </div>
 
           <div class="kpi">
             <div class="kpi__label">Turnover (improved)</div>
             <div class="kpi__value" id="kpiTurnoverImproved">—</div>
-            <div class="kpi__hint">Baseline − marginal improvement</div>
+            <div class="kpi__hint">Baseline − improvement</div>
           </div>
         </div>
 
         <div class="note">
-          Tip: Use <strong>Print report</strong> → then “Save as PDF” for a clean business-case doc.
+          Tip: Print report → “Save as PDF” and drop into an email / follow-up doc.
         </div>
       </article>
     </section>
 
-    <!-- Print-friendly report header -->
     <section class="report card print-only">
       <div class="report__top">
         <div class="report__left">
@@ -151,18 +150,15 @@
           <div>
             <div class="report__company" id="reportCompany">Company</div>
             <div class="report__meta" id="reportIndustry">Industry</div>
-            <div class="report__meta" id="reportMeta">Workforce Economics Lab • UK</div>
+            <div class="report__meta" id="reportMeta">Retention model • Workforce Economics Lab</div>
           </div>
         </div>
       </div>
-
       <hr class="sep" />
-
       <div class="report__body">
         <h3>Retention impact summary</h3>
         <p class="muted">
-          This report models a conservative churn reduction scenario based on industry baselines and the inputs provided.
-          Use it as a discussion starter and sanity-check assumptions with your finance/people teams.
+          Conservative scenario based on industry baselines and the inputs provided.
         </p>
       </div>
     </section>
@@ -171,4 +167,3 @@
   <script src="./app.js"></script>
 </body>
 </html>
-
