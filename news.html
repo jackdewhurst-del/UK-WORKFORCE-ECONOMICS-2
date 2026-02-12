@@ -3,69 +3,103 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>News — Workforce Economics Lab</title>
+  <title>Workforce Economics Lab — News</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="wrap header">
-    <div class="brand">
-      <div class="logo">W</div>
-      <div>
-        <div class="title">Workforce Economics Lab</div>
-        <div class="subtitle">News that impacts workforce economics (filtered)</div>
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div>
+          <div class="brand__title">Workforce Economics Lab</div>
+          <div class="brand__sub">News that impacts workforce economics (filtered)</div>
+        </div>
+      </div>
+
+      <div class="topbar__controls">
+        <div class="field">
+          <label for="industrySelect">Industry</label>
+          <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="regionSelect">Region</label>
+          <select id="regionSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="companyName">Company</label>
+          <input id="companyName" type="text" placeholder="e.g. Acme Ltd" />
+        </div>
+
+        <div class="field">
+          <label for="companyLogo">Logo (optional)</label>
+          <input id="companyLogo" type="file" accept="image/*" />
+        </div>
+
+        <div class="topbar__actions">
+          <button id="btnShare" class="btn btn--ghost" type="button">Copy share link</button>
+          <button id="btnPrint" class="btn" type="button">Print report</button>
+        </div>
       </div>
     </div>
 
-    <div class="top-controls">
-      <div class="field"><label>Industry</label><select id="industry"></select></div>
-      <div class="field"><label>Region</label><select id="region"></select></div>
-      <div class="field"><label>Headcount</label><input id="headcount" type="number" min="1" /></div>
-      <div class="field"><label>Avg salary (£)</label><input id="salary" type="number" min="0" /></div>
-    </div>
+    <nav class="wrap tabs">
+      <a class="tab" href="./index.html">Overview</a>
+      <a class="tab" href="./retention.html">Retention</a>
+      <a class="tab" href="./attraction.html">Attraction & scaling</a>
+      <a class="tab" href="./economics.html">Economics</a>
+      <a class="tab tab--active" href="./news.html">News</a>
+    </nav>
   </header>
 
-  <nav class="nav">
-    <a href="./index.html">Overview</a>
-    <a href="./retention.html">Retention</a>
-    <a href="./attraction.html">Attraction & scaling</a>
-    <a href="./economics.html">Economics</a>
-    <a href="./news.html">News</a>
-  </nav>
-
-  <main class="wrap grid">
+  <main class="wrap">
     <section class="card">
-      <div class="score-row">
-        <div>
-          <div class="card-title">News feed</div>
-          <div class="tiny muted">Filtered for NI, pensions, pay, employment law, inflation, hiring and benefits.</div>
-        </div>
-        <div>
-          <div class="tiny muted">Engagement score</div>
-          <div class="score-big" id="engagementScore">—</div>
+      <div class="card__header">
+        <h2>News feed</h2>
+        <p class="muted">
+          Filtered for NI, pensions, pay, employment law, inflation, hiring and benefits.
+          Some sources block browser requests — those are skipped automatically.
+        </p>
+      </div>
+
+      <div class="newsbar">
+        <button id="btnNewsRefresh" class="btn" type="button">Refresh</button>
+        <div class="newsbar__meta">
+          Engagement score: <strong id="kpiEngagement">—</strong>
         </div>
       </div>
 
-      <div class="divider"></div>
+      <div id="newsList" class="newslist"></div>
 
-      <div class="btnrow">
-        <button id="refreshNews">Refresh</button>
-        <span class="tiny muted" id="newsStatus">—</span>
+      <div class="note">
+        Demo tip: “Here’s what’s changing in the market, and what it means for your workforce economics.”
       </div>
-
-      <div class="divider"></div>
-
-      <div id="newsList" class="news"></div>
-
-      <div class="footer"><strong>Note:</strong> Some sources block browser requests; those will be skipped automatically.</div>
     </section>
 
-    <section class="card">
-      <div class="card-title">Demo tip</div>
-      <div class="tiny muted">
-        Use this page at the end: “Here’s what’s changing in the market, and what it means for your workforce economics.”
+    <section class="report card print-only">
+      <div class="report__top">
+        <div class="report__left">
+          <img id="reportLogo" alt="Company logo" class="report__logo" />
+          <div>
+            <div class="report__company" id="reportCompany">Company</div>
+            <div class="report__meta" id="reportIndustry">Industry</div>
+            <div class="report__meta" id="reportMeta">News snapshot • Workforce Economics Lab</div>
+          </div>
+        </div>
+      </div>
+      <hr class="sep" />
+      <div class="report__body">
+        <h3>News snapshot</h3>
+        <p class="muted">A quick set of headlines that can influence workforce planning and cost pressures.</p>
       </div>
     </section>
   </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
 
   <script src="./app.js"></script>
 </body>
