@@ -1,28 +1,31 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Workforce Economics Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Workforce Economics Lab — Overview</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
-  <!-- Sticky header -->
-  <div class="header">
-    <div class="inner">
+  <header class="topbar">
+    <div class="wrap topbar__inner">
       <div class="brand">
         <div class="logo">W</div>
         <div>
-          <div class="title">Workforce Economics Lab</div>
-          <div class="subtitle">Industry baselines + marginal improvement modelling (UK)</div>
+          <div class="brand__title">Workforce Economics Lab</div>
+          <div class="brand__sub">Workforce risk + improvement modelling (UK)</div>
         </div>
       </div>
 
-      <div class="top-controls">
+      <div class="topbar__controls">
         <div class="field">
           <label for="industrySelect">Industry</label>
           <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="regionSelect">Region</label>
+          <select id="regionSelect"></select>
         </div>
 
         <div class="field">
@@ -31,107 +34,115 @@
         </div>
 
         <div class="field">
-          <label for="companyLogo">Logo</label>
+          <label for="companyLogo">Logo (optional)</label>
           <input id="companyLogo" type="file" accept="image/*" />
         </div>
 
-        <button class="btn primary" id="btnShare">Copy share link</button>
-        <button class="btn" id="btnPrint">Print report</button>
+        <div class="topbar__actions">
+          <button id="btnShare" class="btn btn--ghost" type="button">Copy share link</button>
+          <button id="btnPrint" class="btn" type="button">Print report</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
+    <nav class="wrap tabs">
+      <a class="tab tab--active" href="./index.html">Overview</a>
+      <a class="tab" href="./retention.html">Retention</a>
+      <a class="tab" href="./attraction.html">Attraction & scaling</a>
+      <a class="tab" href="./economics.html">Economics</a>
+      <a class="tab" href="./news.html">News</a>
+    </nav>
+  </header>
 
-    <!-- Printable report header -->
-    <section id="reportHeader" aria-hidden="true">
-      <div class="row">
-        <div class="left">
-          <img id="reportLogo" alt="Company logo" />
-          <div>
-            <div id="reportCompany" style="font-weight:900;font-size:16px;">Company</div>
-            <div class="meta" id="reportMeta">Workforce Economics Lab • UK</div>
+  <main class="wrap">
+    <section class="grid-2">
+      <article class="card">
+        <div class="card__header">
+          <h2>What this is</h2>
+          <p class="muted">
+            A small toolkit for modelling workforce risk and the value of marginal improvements.
+            Use it as a business-case starter in customer conversations.
+          </p>
+        </div>
+
+        <div class="list">
+          <div class="list__item">
+            <div class="list__title">Retention</div>
+            <div class="muted">Churn cost, leavers, saving from -pp turnover</div>
+          </div>
+          <div class="list__item">
+            <div class="list__title">Attraction & scaling</div>
+            <div class="muted">Time-to-hire drag, vacancy cost, hiring friction</div>
+          </div>
+          <div class="list__item">
+            <div class="list__title">Economics</div>
+            <div class="muted">NI / salary sacrifice style savings placeholders (generic)</div>
+          </div>
+          <div class="list__item">
+            <div class="list__title">News</div>
+            <div class="muted">Workforce economics headlines + simple scoring signal</div>
           </div>
         </div>
-        <div class="badge">
-          Industry: <span id="reportIndustry">Industry</span>
+      </article>
+
+      <article class="card">
+        <div class="card__header">
+          <h2>Snapshot (updates as you change inputs)</h2>
+          <p class="muted">Pulled from industry baselines + your global inputs.</p>
         </div>
-      </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi__label">Engagement score</div>
+            <div class="kpi__value" id="kpiEngagement">—</div>
+            <div class="kpi__hint">0–100 indicator</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Turnover baseline</div>
+            <div class="kpi__value" id="kpiTurnoverBaseline">—</div>
+            <div class="kpi__hint">Industry reference</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Hiring difficulty</div>
+            <div class="kpi__value" id="kpiHiringDifficulty">—</div>
+            <div class="kpi__hint">Industry reference</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Retention saving (example)</div>
+            <div class="kpi__value" id="kpiRetentionExampleSaving">—</div>
+            <div class="kpi__hint">Uses default headcount/salary</div>
+          </div>
+        </div>
+
+        <div class="note">
+          Everything is conservative by default. You can tune baselines in <code>app.js</code>.
+        </div>
+      </article>
     </section>
 
-    <!-- Nav -->
-    <nav class="nav">
-      <a class="pill active" href="./index.html">Overview</a>
-      <a class="pill" href="./retention.html">Retention</a>
-      <a class="pill" href="./attraction.html">Attraction</a>
-      <a class="pill" href="./economics.html">Economics</a>
-      <a class="pill" href="./news.html">News</a>
-    </nav>
-
-    <div class="grid cols2">
-      <section class="card">
-        <h2>What this is</h2>
-        <p>
-          A lightweight tool hub to model people-risk, retention pressure, attraction friction and the cost of “doing nothing”,
-          using industry baselines plus your inputs. Designed to be screenshot/print friendly for internal business cases.
-        </p>
-
-        <hr class="sep" />
-
-        <h2>How to use it (fast)</h2>
-        <p>
-          1) Pick an industry (this loads predictive baseline assumptions).<br/>
-          2) Enter company headcount + salary assumptions on each page.<br/>
-          3) Test marginal improvements (e.g. -2pp turnover) and generate a printable report.
-        </p>
-
-        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-          <a class="pill" href="./retention.html">Open Retention model →</a>
-          <a class="pill" href="./attraction.html">Open Attraction model →</a>
-          <a class="pill" href="./economics.html">Open Economics model →</a>
-        </div>
-
-        <div style="margin-top:12px;" class="badge">
-          Tip: use “Copy share link” to send a scenario to your boss/customer.
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Tool hub roadmap (simple)</h2>
-        <p>
-          Keep it clean. One page per widget. Each widget should:
-          (a) cite assumptions,
-          (b) show baseline vs improved,
-          (c) be printable.
-        </p>
-
-        <div class="grid cols3" style="margin-top:12px;">
-          <div class="card" style="padding:12px;">
-            <div style="font-weight:900;margin-bottom:6px;">Retention</div>
-            <div style="color:var(--muted);font-size:13px;">Turnover cost + savings from marginal improvements.</div>
-          </div>
-          <div class="card" style="padding:12px;">
-            <div style="font-weight:900;margin-bottom:6px;">Attraction</div>
-            <div style="color:var(--muted);font-size:13px;">Time-to-hire + vacancy drag (coming next).</div>
-          </div>
-          <div class="card" style="padding:12px;">
-            <div style="font-weight:900;margin-bottom:6px;">Economics</div>
-            <div style="color:var(--muted);font-size:13px;">NI / salary sacrifice / benefits renewal levers (coming next).</div>
+    <section class="report card print-only">
+      <div class="report__top">
+        <div class="report__left">
+          <img id="reportLogo" alt="Company logo" class="report__logo" />
+          <div>
+            <div class="report__company" id="reportCompany">Company</div>
+            <div class="report__meta" id="reportIndustry">Industry</div>
+            <div class="report__meta" id="reportMeta">Workforce Economics Lab • UK</div>
           </div>
         </div>
-
-        <hr class="sep" />
-
-        <div class="badge">
-          Goal: a credible business case with conservative assumptions + clear “what changes the outcome”.
-        </div>
-      </section>
-    </div>
-
-    <div class="footer">
-      Built by Jack Dewhurst — Workforce Economics
-    </div>
-  </div>
+      </div>
+      <hr class="sep" />
+      <div class="report__body">
+        <h3>Overview snapshot</h3>
+        <p class="muted">
+          This snapshot is generated from the selected industry and region. It is directional and designed for discussion.
+        </p>
+      </div>
+    </section>
+  </main>
 
   <script src="./app.js"></script>
 </body>
