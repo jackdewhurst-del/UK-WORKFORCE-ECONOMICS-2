@@ -1,28 +1,31 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Workforce Economics Lab — Attraction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Workforce Economics Lab — Attraction & Scaling</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
-  <!-- Header -->
-  <div class="header">
-    <div class="inner">
+  <header class="topbar">
+    <div class="wrap topbar__inner">
       <div class="brand">
         <div class="logo">W</div>
         <div>
-          <div class="title">Workforce Economics Lab</div>
-          <div class="subtitle">Attraction model — vacancy drag & hiring friction</div>
+          <div class="brand__title">Workforce Economics Lab</div>
+          <div class="brand__sub">Workforce risk + improvement modelling (UK)</div>
         </div>
       </div>
 
-      <div class="top-controls">
+      <div class="topbar__controls">
         <div class="field">
           <label for="industrySelect">Industry</label>
           <select id="industrySelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="regionSelect">Region</label>
+          <select id="regionSelect"></select>
         </div>
 
         <div class="field">
@@ -31,110 +34,126 @@
         </div>
 
         <div class="field">
-          <label for="companyLogo">Logo</label>
+          <label for="companyLogo">Logo (optional)</label>
           <input id="companyLogo" type="file" accept="image/*" />
         </div>
 
-        <button class="btn primary" id="btnShare">Copy share link</button>
-        <button class="btn" id="btnPrint">Print report</button>
+        <div class="topbar__actions">
+          <button id="btnShare" class="btn btn--ghost" type="button">Copy share link</button>
+          <button id="btnPrint" class="btn" type="button">Print report</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
+    <nav class="wrap tabs">
+      <a class="tab" href="./index.html">Overview</a>
+      <a class="tab" href="./retention.html">Retention</a>
+      <a class="tab tab--active" href="./attraction.html">Attraction & scaling</a>
+      <a class="tab" href="./economics.html">Economics</a>
+      <a class="tab" href="./news.html">News</a>
+    </nav>
+  </header>
 
-    <!-- Printable report header -->
-    <section id="reportHeader" aria-hidden="true">
-      <div class="row">
-        <div class="left">
-          <img id="reportLogo" alt="Company logo" />
-          <div>
-            <div id="reportCompany" style="font-weight:900;font-size:16px;">Company</div>
-            <div class="meta" id="reportMeta">Workforce Economics Lab • UK</div>
+  <main class="wrap">
+    <section class="grid-2">
+      <article class="card">
+        <div class="card__header">
+          <h2>Inputs</h2>
+          <p class="muted">Baseline assumptions load from the selected industry.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="openRoles">Open roles (currently)</label>
+            <input id="openRoles" type="number" min="0" step="1" value="10" />
+          </div>
+
+          <div class="field">
+            <label for="avgSalaryAttraction">Average salary (£)</label>
+            <input id="avgSalaryAttraction" type="number" min="0" step="100" value="35000" />
+          </div>
+
+          <div class="field">
+            <label for="timeToHireDays">Time to hire (days)</label>
+            <input id="timeToHireDays" type="number" min="0" step="1" />
+          </div>
+
+          <div class="field">
+            <label for="productivityLossPct">Productivity loss while vacant (%)</label>
+            <input id="productivityLossPct" type="number" min="0" max="100" step="1" />
+          </div>
+
+          <div class="field">
+            <label for="attractionImprovement">Marginal improvement (days faster)</label>
+            <input id="attractionImprovement" type="number" min="0" step="1" value="5" />
           </div>
         </div>
-        <div class="badge">
-          Industry: <span id="reportIndustry">Industry</span>
+
+        <div class="note">
+          Vacancy cost is directional: salary/day × productivity loss × days vacant × open roles.
         </div>
-      </div>
+      </article>
+
+      <article class="card">
+        <div class="card__header">
+          <h2>Outputs</h2>
+          <p class="muted">What faster hiring could be worth (conservative).</p>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi__label">Hiring difficulty</div>
+            <div class="kpi__value" id="kpiHiringDifficulty">—</div>
+            <div class="kpi__hint">Industry reference</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Time to hire (baseline)</div>
+            <div class="kpi__value" id="kpiTTHBaseline">—</div>
+            <div class="kpi__hint">Industry baseline</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Vacancy cost (baseline)</div>
+            <div class="kpi__value" id="kpiVacancyCost">—</div>
+            <div class="kpi__hint">Directional estimate</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Potential saving</div>
+            <div class="kpi__value" id="kpiVacancySaving">—</div>
+            <div class="kpi__hint">From faster hiring</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi__label">Engagement score</div>
+            <div class="kpi__value" id="kpiEngagement">—</div>
+            <div class="kpi__hint">0–100 indicator</div>
+          </div>
+        </div>
+
+        <div class="note">Tip: Pair this with Retention for a “churn + hiring” combined story.</div>
+      </article>
     </section>
 
-    <!-- Nav -->
-    <nav class="nav">
-      <a class="pill" href="./index.html">Overview</a>
-      <a class="pill" href="./retention.html">Retention</a>
-      <a class="pill active" href="./attraction.html">Attraction</a>
-      <a class="pill" href="./economics.html">Economics</a>
-      <a class="pill" href="./news.html">News</a>
-    </nav>
-
-    <div class="grid cols2">
-
-      <!-- Inputs -->
-      <section class="card">
-        <h2>Inputs</h2>
-        <p>Model cost of open roles + time-to-hire drag.</p>
-
-        <div class="form">
-          <div class="form-row two">
-            <div class="input">
-              <label for="openRoles">Number of open roles</label>
-              <input id="openRoles" type="number" min="0" value="10" />
-            </div>
-            <div class="input">
-              <label for="avgSalary">Average salary (£)</label>
-              <input id="avgSalary" type="number" min="0" value="35000" />
-            </div>
-          </div>
-
-          <div class="form-row two">
-            <div class="input">
-              <label for="timeToHire">Time to hire (days)</label>
-              <input id="timeToHire" type="number" min="0" value="40" />
-            </div>
-            <div class="input">
-              <label for="attractionImprovement">Improvement (days faster)</label>
-              <input id="attractionImprovement" type="number" min="0" value="5" />
-            </div>
-          </div>
-
-          <div class="badge">
-            Baseline time-to-hire assumptions vary by industry.
+    <section class="report card print-only">
+      <div class="report__top">
+        <div class="report__left">
+          <img id="reportLogo" alt="Company logo" class="report__logo" />
+          <div>
+            <div class="report__company" id="reportCompany">Company</div>
+            <div class="report__meta" id="reportIndustry">Industry</div>
+            <div class="report__meta" id="reportMeta">Attraction model • Workforce Economics Lab</div>
           </div>
         </div>
-      </section>
-
-      <!-- Outputs -->
-      <section class="card">
-        <h2>Outputs</h2>
-        <p>Vacancy drag cost based on open roles × salary × time unfilled.</p>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="label">Vacancy cost (baseline)</div>
-            <div class="value" id="kpiVacancyCost">—</div>
-            <div class="hint">Open roles × daily salary × days unfilled</div>
-          </div>
-
-          <div class="kpi">
-            <div class="label">Cost saving (improved)</div>
-            <div class="value" id="kpiAttractionSaving">—</div>
-            <div class="hint">Reduction in time-to-hire</div>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;" class="badge">
-          Reducing time-to-hire by even 5–10 days compounds quickly at scale.
-        </div>
-      </section>
-
-    </div>
-
-    <div class="footer">
-      Built by Jack Dewhurst — Workforce Economics
-    </div>
-
-  </div>
+      </div>
+      <hr class="sep" />
+      <div class="report__body">
+        <h3>Attraction & scaling summary</h3>
+        <p class="muted">Conservative scenario based on industry baselines and the inputs provided.</p>
+      </div>
+    </section>
+  </main>
 
   <script src="./app.js"></script>
 </body>
